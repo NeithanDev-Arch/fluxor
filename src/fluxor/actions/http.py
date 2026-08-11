@@ -47,7 +47,7 @@ class RequestInput(ActionInput):
         default=True,
         description="Se false, status de erro vira saída normal em vez de exceção.",
     )
-    user_agent: str = "Fluxor/0.1 (+https://github.com/seu-usuario/fluxor)"
+    user_agent: str = "Fluxor/0.1 (+https://github.com/NeithanDev-Arch/fluxor)"
 
 
 async def perform_request(params: RequestInput) -> dict[str, Any]:

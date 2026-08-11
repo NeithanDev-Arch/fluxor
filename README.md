@@ -4,7 +4,7 @@
 
 **Motor de automações declarativas.** Você descreve o fluxo em YAML — o Fluxor executa, tenta de novo quando falha, guarda o histórico e mostra tudo num painel.
 
-[![CI](https://github.com/seu-usuario/fluxor/actions/workflows/ci.yml/badge.svg)](https://github.com/seu-usuario/fluxor/actions/workflows/ci.yml)
+[![CI](https://github.com/NeithanDev-Arch/fluxor/actions/workflows/ci.yml/badge.svg)](https://github.com/NeithanDev-Arch/fluxor/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%20|%203.12%20|%203.13-3776AB?logo=python&logoColor=white)](https://www.python.org)
 [![Ruff](https://img.shields.io/badge/lint-ruff-261230?logo=ruff&logoColor=white)](https://github.com/astral-sh/ruff)
 [![Mypy](https://img.shields.io/badge/types-mypy-2A6DB2)](https://mypy-lang.org/)
@@ -101,7 +101,7 @@ SUCCESS  3 ok · 0 falhas · 1 pulados · 231ms
 ## Comece em 60 segundos
 
 ```bash
-git clone https://github.com/seu-usuario/fluxor.git
+git clone https://github.com/NeithanDev-Arch/fluxor.git
 cd fluxor
 
 python -m venv .venv

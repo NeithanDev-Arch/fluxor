@@ -5,7 +5,7 @@ Obrigado pelo interesse. Este guia é curto de propósito.
 ## Ambiente
 
 ```bash
-git clone https://github.com/seu-usuario/fluxor.git
+git clone https://github.com/NeithanDev-Arch/fluxor.git
 cd fluxor
 python -m venv .venv
 source .venv/bin/activate      # Windows: .venv\Scripts\activate

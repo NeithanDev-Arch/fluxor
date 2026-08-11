@@ -28,7 +28,7 @@ Requisito: **Python 3.11 ou superior**. Confira com `python --version`.
 ### Opção A — a partir do repositório (recomendada para desenvolver)
 
 ```bash
-git clone https://github.com/seu-usuario/fluxor.git
+git clone https://github.com/NeithanDev-Arch/fluxor.git
 cd fluxor
 
 python -m venv .venv
@@ -55,7 +55,7 @@ fluxor actions
 ### Opção B — só para usar
 
 ```bash
-pip install git+https://github.com/seu-usuario/fluxor.git
+pip install git+https://github.com/NeithanDev-Arch/fluxor.git
 ```
 
 ### Opção C — Docker
@@ -1290,4 +1290,4 @@ Quem instalar o seu pacote passa a ter as actions disponíveis, sem fork e sem c
 
 ---
 
-Dúvida que este guia não cobriu? [Abra uma issue](https://github.com/seu-usuario/fluxor/issues).
+Dúvida que este guia não cobriu? [Abra uma issue](https://github.com/NeithanDev-Arch/fluxor/issues).

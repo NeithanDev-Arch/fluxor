@@ -57,9 +57,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/seu-usuario/fluxor"
-Documentation = "https://github.com/seu-usuario/fluxor/blob/main/GUIA.md"
-Issues = "https://github.com/seu-usuario/fluxor/issues"
+Homepage = "https://github.com/NeithanDev-Arch/fluxor"
+Documentation = "https://github.com/NeithanDev-Arch/fluxor/blob/main/GUIA.md"
+Issues = "https://github.com/NeithanDev-Arch/fluxor/issues"
 
 [project.scripts]
 fluxor = "fluxor.cli:main"

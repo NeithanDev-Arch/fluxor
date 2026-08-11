@@ -6,14 +6,14 @@
 # Mostra os quatro conceitos básicos: vars, saída de um passo alimentando o
 # próximo, laço sobre lista e passo condicional.
 # ---------------------------------------------------------------------------
-name: hello-mundo
+name: hello
 description: Primeiro contato com o Fluxor — roda sem internet
 
 trigger:
   type: manual
 
 vars:
-  nome: mundo
+  nome: NeithanDev
   itens:
     - relatório financeiro
     - backup do banco
