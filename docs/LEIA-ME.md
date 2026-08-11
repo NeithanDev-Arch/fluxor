@@ -1,11 +1,16 @@
 # Imagens do repositório
 
-Esta pasta guarda as imagens usadas no README. Ela está vazia de propósito —
-capturas de tela precisam ser feitas na sua máquina.
+Esta pasta guarda as imagens usadas no README.
+
+| Arquivo | Estado |
+|---|---|
+| `dashboard.png` | ✅ no README |
+| `execucao.gif` | ⬜ sugerido abaixo |
+| `dashboard-claro.png` | ⬜ opcional |
 
 ## O que capturar (em ordem de impacto)
 
-### 1. `dashboard.png` — a mais importante
+### 1. `dashboard.png` — a mais importante (já feita)
 
 ```bash
 fluxor serve

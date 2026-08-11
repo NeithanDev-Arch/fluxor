@@ -132,13 +132,11 @@ O [**GUIA.md**](GUIA.md) é o passo a passo completo — instalação, referênc
 
 ## Dashboard
 
-Painel em HTML, CSS e JavaScript puros — sem framework, sem build. Métricas do período, execuções por dia, lista de workflows com botão de disparo e um painel lateral com o detalhe de cada passo (saída, tentativas, erro).
+![Dashboard do Fluxor, com o painel de detalhe de uma execução aberto](docs/dashboard.png)
 
-> **Capture o seu print:** rode `fluxor serve`, abra `http://localhost:8000`,
-> execute alguns workflows para popular o gráfico e salve a imagem em
-> `docs/dashboard.png`. Depois troque este bloco por
-> `![Dashboard](docs/dashboard.png)`. Um GIF de 10 segundos mostrando um
-> workflow rodando vale mais que dois parágrafos de README.
+Painel em HTML, CSS e JavaScript puros — sem framework, sem build, sem `node_modules`.
+
+À esquerda ficam as métricas do período, o gráfico diário e a lista de workflows, cada um com disparo em um clique. À direita, o painel de detalhe: na captura acima é a execução do `clima-diario`, mostrando a resposta HTTP crua das quatro cidades consultadas **em paralelo** (1,0 s no total), o resultado da transformação e o boletim final montado — passo a passo, com a duração de cada um.
 
 ---
 
