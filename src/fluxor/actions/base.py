@@ -2,7 +2,7 @@
 
 Uma action é uma classe com três coisas: um nome (`http.get`), um schema de
 entrada (`Input`, um modelo Pydantic) e um método `run` assíncrono. O schema não
-é burocracia — é ele que produz mensagens de erro decentes quando alguém erra o
+é burocracia: é ele que produz mensagens de erro decentes quando alguém erra o
 YAML, e é dele que o `fluxor actions` e o dashboard extraem a documentação.
 """
 
@@ -34,7 +34,7 @@ class Action(ABC):
     """Campos que o motor **não** deve renderizar antes de entregar.
 
     Serve para parâmetros que são, eles próprios, templates avaliados dentro da
-    action — como o `expr` do `transform.map`, que precisa de `{{ item }}` e só
+    action, como o `expr` do `transform.map`, que precisa de `{{ item }}` e só
     a action sabe o valor de `item`.
     """
 

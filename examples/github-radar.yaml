@@ -3,7 +3,7 @@
 # Rode todo dia e, em duas semanas, você tem um histórico para plotar.
 #
 # Funciona sem token (limite de 60 req/h por IP). Com token, sobe para 5.000/h:
-# preencha GITHUB_TOKEN no .env — o `env:` abaixo já libera a leitura.
+# preencha GITHUB_TOKEN no .env; o `env:` abaixo já libera a leitura.
 # ---------------------------------------------------------------------------
 name: github-radar
 description: Coleta estrelas, forks e issues abertas de repositórios acompanhados
@@ -35,7 +35,7 @@ steps:
       backoff: exponential
 
   # Uma expressão que resolve para um dicionário devolve um dicionário de
-  # verdade — não uma string com cara de dicionário.
+  # verdade, não uma string com cara de dicionário.
   - id: metricas
     use: transform.map
     with:
@@ -65,9 +65,9 @@ steps:
     use: transform.template
     with:
       template: |
-        Radar GitHub — {{ today() }}
+        Radar GitHub de {{ today() }}
         {% for repo in steps.ordenado %}
-        {{ repo.repo }} — {{ repo.estrelas }} ⭐ · {{ repo.forks }} forks · {{ repo.issues_abertas }} issues
+        {{ repo.repo }}: {{ repo.estrelas }} ⭐ · {{ repo.forks }} forks · {{ repo.issues_abertas }} issues
         {%- endfor %}
 
   - id: publicar

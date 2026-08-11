@@ -553,7 +553,7 @@ def init_command(
     sample = target / "meu-primeiro-workflow.yaml"
 
     if sample.exists():
-        _fail(f"{sample} já existe — não vou sobrescrever")
+        _fail(f"{sample} já existe; não vou sobrescrever")
         return
 
     sample.write_text(SAMPLE_WORKFLOW, encoding="utf-8")
@@ -561,7 +561,7 @@ def init_command(
     console.print(f"\nPróximo passo:\n  [bold cyan]fluxor run {sample}[/bold cyan]")
 
 
-SAMPLE_WORKFLOW = """# Workflow de exemplo — rode com: fluxor run meu-primeiro-workflow.yaml
+SAMPLE_WORKFLOW = """# Workflow de exemplo. Rode com: fluxor run meu-primeiro-workflow.yaml
 name: meu-primeiro-workflow
 description: Busca a cotação do dólar e mostra no log
 

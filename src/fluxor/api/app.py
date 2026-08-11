@@ -1,7 +1,7 @@
 """Aplicação FastAPI: API REST + dashboard.
 
 O ciclo de vida (`lifespan`) é onde tudo se conecta: banco, repositório, motor,
-carga dos workflows e — se ligado — o agendador. Ao desligar, tudo é encerrado
+carga dos workflows e, se ligado, o agendador. Ao desligar, tudo é encerrado
 na ordem inversa. Nada de estado global solto pelo módulo.
 """
 
@@ -91,7 +91,7 @@ async def lifespan(application: FastAPI) -> AsyncIterator[None]:
 
 
 def create_app() -> FastAPI:
-    """Fábrica da aplicação — usada pelo uvicorn e pelos testes."""
+    """Fábrica da aplicação, usada pelo uvicorn e pelos testes."""
     application = FastAPI(
         title="Fluxor",
         version=__version__,
@@ -113,7 +113,7 @@ def create_app() -> FastAPI:
 
 
 def describe_state(application: FastAPI) -> dict[str, Any]:
-    """Resumo do estado atual — alimenta o /api/health."""
+    """Resumo do estado atual, que alimenta o /api/health."""
     scheduler = getattr(application.state, "scheduler", None)
     return {
         "status": "ok" if not application.state.workflows_error else "degraded",

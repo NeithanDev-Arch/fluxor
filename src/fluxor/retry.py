@@ -2,7 +2,7 @@
 
 Regra do motor: erro que herda de :class:`~fluxor.exceptions.PermanentError`
 nunca é retentado. Não adianta pedir de novo um campo obrigatório que não existe
-ou insistir num 404 — só atrasa a falha e polui o log.
+ou insistir num 404. Só atrasa a falha e polui o log.
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from fluxor.models import BackoffStrategy, RetryConfig
 
 T = TypeVar("T")
 
-# Callback (tentativa, erro, segundos até a próxima) — usado para logar.
+# Callback (tentativa, erro, segundos até a próxima), usado para logar.
 AttemptCallback = Callable[[int, BaseException, float], None]
 
 

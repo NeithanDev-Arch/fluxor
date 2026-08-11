@@ -1,7 +1,7 @@
 # ---------------------------------------------------------------------------
 # Scraping + alerta: o caso clássico de automação, sem uma linha de Python.
 #
-# O alvo é o books.toscrape.com — um site feito justamente para praticar
+# O alvo é o books.toscrape.com, um site feito justamente para praticar
 # scraping, então não há questão de termos de uso aqui. Troque a URL e o
 # seletor para o produto que você quer acompanhar.
 #

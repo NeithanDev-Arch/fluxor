@@ -2,7 +2,7 @@
 
 # ⚡ Fluxor
 
-**Motor de automações declarativas.** Você descreve o fluxo em YAML — o Fluxor executa, tenta de novo quando falha, guarda o histórico e mostra tudo num painel.
+**Motor de automações declarativas.** Você descreve o fluxo em YAML; o Fluxor executa, tenta de novo quando falha, guarda o histórico e mostra tudo num painel.
 
 [![CI](https://github.com/NeithanDev-Arch/fluxor/actions/workflows/ci.yml/badge.svg)](https://github.com/NeithanDev-Arch/fluxor/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%20|%203.12%20|%203.13-3776AB?logo=python&logoColor=white)](https://www.python.org)
@@ -126,7 +126,7 @@ Ou direto no Docker:
 docker compose up -d           # dashboard + agendador em http://localhost:8000
 ```
 
-O [**GUIA.md**](GUIA.md) é o passo a passo completo — instalação, referência do YAML, todas as actions, filtros, CLI, API, agendamento, deploy e diagnóstico de problemas.
+O [**GUIA.md**](GUIA.md) é o passo a passo completo: instalação, referência do YAML, todas as actions, filtros, CLI, API, agendamento, deploy e diagnóstico de problemas.
 
 ---
 
@@ -134,9 +134,9 @@ O [**GUIA.md**](GUIA.md) é o passo a passo completo — instalação, referênc
 
 ![Dashboard do Fluxor, com o painel de detalhe de uma execução aberto](docs/dashboard.png)
 
-Painel em HTML, CSS e JavaScript puros — sem framework, sem build, sem `node_modules`.
+Painel em HTML, CSS e JavaScript puros, sem framework, sem build e sem `node_modules`.
 
-À esquerda ficam as métricas do período, o gráfico diário e a lista de workflows, cada um com disparo em um clique. À direita, o painel de detalhe: na captura acima é a execução do `clima-diario`, mostrando a resposta HTTP crua das quatro cidades consultadas **em paralelo** (1,0 s no total), o resultado da transformação e o boletim final montado — passo a passo, com a duração de cada um.
+À esquerda ficam as métricas do período, o gráfico diário e a lista de workflows, cada um com disparo em um clique. À direita, o painel de detalhe: na captura acima é a execução do `clima-diario`, mostrando a resposta HTTP crua das quatro cidades consultadas **em paralelo** (1,0 s no total), o resultado da transformação e o boletim final montado, passo a passo, com a duração de cada um.
 
 ---
 
@@ -186,17 +186,17 @@ O detalhamento de cada decisão está em [**ARQUITETURA.md**](ARQUITETURA.md).
 
 As que mais mudaram o resultado final:
 
-**Erro permanente ≠ erro transitório.** Um 404 continuará 404 na terceira tentativa; um 503 costuma passar. Erros que herdam de `PermanentError` pulam a política de retry por completo. A política não sabe nada sobre HTTP — quem classifica é quem conhece o protocolo.
+**Erro permanente ≠ erro transitório.** Um 404 continuará 404 na terceira tentativa; um 503 costuma passar. Erros que herdam de `PermanentError` pulam a política de retry por completo. A política não sabe nada sobre HTTP: quem classifica é quem conhece o protocolo.
 
-**Tipagem nativa nos templates.** Uma string que é *apenas* uma expressão preserva o tipo: `"{{ vars.teto }}"` devolve `2500` (int), enquanto `"Teto: {{ vars.teto }}"` devolve texto. Sem isso, todo `when` numérico viraria comparação de string — e `"9" > "10"` é verdadeiro em string. A detecção usa a árvore sintática do Jinja, não regex; [a versão com regex tinha um bug real de backtracking](src/fluxor/template.py) que confundia `{{ a }}:{{ b }}` com uma expressão só.
+**Tipagem nativa nos templates.** Uma string que é *apenas* uma expressão preserva o tipo: `"{{ vars.teto }}"` devolve `2500` (int), enquanto `"Teto: {{ vars.teto }}"` devolve texto. Sem isso, todo `when` numérico viraria comparação de string, e `"9" > "10"` é verdadeiro em string. A detecção usa a árvore sintática do Jinja, não regex; [a versão com regex tinha um bug real de backtracking](src/fluxor/template.py) que confundia `{{ a }}:{{ b }}` com uma expressão só.
 
 **Allowlist de variáveis de ambiente.** O workflow declara `env: [TELEGRAM_BOT_TOKEN]` e só isso fica visível no template. Um YAML malicioso não alcança `AWS_SECRET_ACCESS_KEY` porque ela simplesmente não está no contexto.
 
-**Templates em sandbox.** `SandboxedEnvironment` bloqueia `{{ ''.__class__.__mro__ }}` — o caminho clássico para escapar de um template e chegar em execução arbitrária. Há teste para isso.
+**Templates em sandbox.** `SandboxedEnvironment` bloqueia `{{ ''.__class__.__mro__ }}`, o caminho clássico para escapar de um template e chegar em execução arbitrária. Há teste para isso.
 
-**O motor não conhece o banco.** Ele fala com um `Protocol` de três métodos (`RunSink`). Trocar SQLite por Postgres, Redis ou um arquivo JSONL não encosta em uma linha do engine — e a persistência é *best-effort*: banco fora do ar registra um warning, não derruba a automação que estava rodando.
+**O motor não conhece o banco.** Ele fala com um `Protocol` de três métodos (`RunSink`). Trocar SQLite por Postgres, Redis ou um arquivo JSONL não encosta em uma linha do engine. E a persistência é *best-effort*: banco fora do ar registra um warning, não derruba a automação que estava rodando.
 
-**Falha é dado, não crash.** `Engine.execute` nunca levanta por falha de passo: devolve um registro com `status=failed` e a mensagem. Quem chama decide — a CLI vira exit code 1, o agendador loga e segue vivo para o próximo horário.
+**Falha é dado, não crash.** `Engine.execute` nunca levanta por falha de passo: devolve um registro com `status=failed` e a mensagem. Quem chama decide o que fazer com isso. A CLI vira exit code 1, o agendador loga e segue vivo para o próximo horário.
 
 **`shell.run` seguro por padrão.** Recebe lista de argumentos e executa sem shell. `shell: true` existe, é opt-in, e está documentado com o motivo do cuidado.
 
@@ -219,7 +219,7 @@ fluxor actions http.get     # parâmetros, tipos, obrigatoriedade e descrição
 | **notify** | `notify.log` · `notify.telegram` · `notify.discord` · `notify.webhook` · `notify.email` |
 | **shell** | `shell.run` |
 
-Criar a sua leva uns 20 minutos — o passo a passo está em [CONTRIBUTING.md](CONTRIBUTING.md).
+Criar a sua leva uns 20 minutos, e o passo a passo está em [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ---
 
@@ -256,7 +256,7 @@ O CI roda tudo isso em Python 3.11, 3.12 e 3.13, valida os exemplos versionados,
 ## Roadmap
 
 - [ ] Grafo de dependências entre passos (execução paralela automática, não só `foreach`)
-- [ ] `trigger.type: file` — reagir a arquivo criado numa pasta
+- [ ] `trigger.type: file` para reagir a arquivo criado numa pasta
 - [ ] Editor de workflow no dashboard, com validação ao vivo
 - [ ] Métricas em formato Prometheus (`/metrics`)
 - [ ] Retomada de execução a partir do passo que falhou
@@ -265,4 +265,4 @@ O CI roda tudo isso em Python 3.11, 3.12 e 3.13, valida os exemplos versionados,
 
 ## Licença
 
-MIT — veja [LICENSE](LICENSE). Use, modifique e distribua à vontade.
+MIT. Veja [LICENSE](LICENSE). Use, modifique e distribua à vontade.

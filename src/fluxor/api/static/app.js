@@ -1,5 +1,5 @@
 /* ---------------------------------------------------------------------------
- * Fluxor — dashboard
+ * Fluxor · dashboard
  * JavaScript puro, sem framework e sem build: o arquivo que você lê é o que roda.
  * ------------------------------------------------------------------------- */
 
@@ -156,7 +156,7 @@ function renderWorkflows(payload) {
   const container = document.getElementById("workflow-list");
   if (!payload.items.length) {
     container.innerHTML =
-      '<p class="empty">nenhum workflow carregado — confira FLUXOR_WORKFLOWS_DIR</p>';
+      '<p class="empty">nenhum workflow carregado; confira FLUXOR_WORKFLOWS_DIR</p>';
     return;
   }
 
@@ -184,7 +184,7 @@ function renderRuns(payload) {
   const container = document.getElementById("run-list");
 
   if (!payload.items.length) {
-    container.innerHTML = '<p class="empty">nenhuma execução ainda — clique em "rodar"</p>';
+    container.innerHTML = '<p class="empty">nenhuma execução ainda; clique em "rodar"</p>';
     return;
   }
 
@@ -258,7 +258,7 @@ async function openDrawer(runId) {
         : "";
       const failure = step.error ? `<div class="error-box">${escapeHtml(step.error)}</div>` : "";
       const skipped = step.skipped_reason
-        ? `<div class="row-sub" style="margin-top:6px">pulado — ${escapeHtml(step.skipped_reason)}</div>`
+        ? `<div class="row-sub" style="margin-top:6px">pulado: ${escapeHtml(step.skipped_reason)}</div>`
         : "";
       const attempts = step.attempts > 1 ? ` · ${step.attempts} tentativas` : "";
 
@@ -343,7 +343,7 @@ function bindEvents() {
     });
   });
 
-  // Pausa o polling quando a aba não está visível — não faz sentido consultar
+  // Pausa o polling quando a aba não está visível, pois não faz sentido consultar
   // o servidor a cada 15s para uma página que ninguém está olhando.
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {

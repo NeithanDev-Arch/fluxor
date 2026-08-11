@@ -25,7 +25,7 @@ Tudo que você precisa para usar o Fluxor, do zero ao deploy.
 
 Requisito: **Python 3.11 ou superior**. Confira com `python --version`.
 
-### Opção A — a partir do repositório (recomendada para desenvolver)
+### Opção A: a partir do repositório (recomendada para desenvolver)
 
 ```bash
 git clone https://github.com/NeithanDev-Arch/fluxor.git
@@ -52,13 +52,13 @@ fluxor --version
 fluxor actions
 ```
 
-### Opção B — só para usar
+### Opção B: só para usar
 
 ```bash
 pip install git+https://github.com/NeithanDev-Arch/fluxor.git
 ```
 
-### Opção C — Docker
+### Opção C: Docker
 
 ```bash
 docker compose up -d          # dashboard + agendador em http://localhost:8000
@@ -66,7 +66,7 @@ docker compose logs -f        # acompanhar
 docker compose down           # parar
 ```
 
-O `docker-compose.yml` monta `./examples` dentro do container como somente-leitura. Edite o YAML na sua máquina e clique em **recarregar YAML** no dashboard — não precisa reconstruir a imagem.
+O `docker-compose.yml` monta `./examples` dentro do container como somente-leitura. Edite o YAML na sua máquina e clique em **recarregar YAML** no dashboard. Não precisa reconstruir a imagem.
 
 ### Configurando segredos
 
@@ -106,7 +106,7 @@ Os símbolos: `✔` executou, `✘` falhou, `⊘` foi pulado porque a condição
 fluxor init meus-workflows
 ```
 
-Isso cria `meus-workflows/meu-primeiro-workflow.yaml` já comentado. Ou escreva do zero — crie `cotacao.yaml`:
+Isso cria `meus-workflows/meu-primeiro-workflow.yaml` já comentado. Ou escreva do zero, criando `cotacao.yaml`:
 
 ```yaml
 name: minha-cotacao
@@ -185,8 +185,8 @@ Para cada passo, sempre na mesma ordem:
 
 **Se um passo falha:**
 
-- `on_error: fail` (padrão) — o workflow para, roda os passos de `on_failure` e termina com status `failed`.
-- `on_error: continue` — a falha é registrada, o workflow segue, e o status final é `partial`.
+- `on_error: fail` (padrão): o workflow para, roda os passos de `on_failure` e termina com status `failed`.
+- `on_error: continue`: a falha é registrada, o workflow segue, e o status final é `partial`.
 
 **Status possíveis de uma execução:**
 
@@ -196,7 +196,7 @@ Para cada passo, sempre na mesma ordem:
 | `partial` | Terminou até o fim, mas algum passo com `on_error: continue` falhou. |
 | `failed` | Um passo abortou o fluxo, ou o workflow estourou o timeout. |
 
-Um detalhe importante: **passo pulado não publica saída**. Se o passo `b` usa `{{ steps.a }}` e `a` foi pulado, `b` falha com uma mensagem clara. É proposital — melhor um erro explícito do que um valor vazio circulando pelo fluxo.
+Um detalhe importante: **passo pulado não publica saída**. Se o passo `b` usa `{{ steps.a }}` e `a` foi pulado, `b` falha com uma mensagem clara. É proposital, porque um erro explícito vale mais que um valor vazio circulando pelo fluxo.
 
 ---
 
@@ -220,7 +220,7 @@ on_failure: [ ... ]         # opcional · compensação quando falha
 
 Qualquer chave fora dessa lista causa erro de validação. É de propósito: `descripton` em vez de `description` precisa falhar, não ser ignorado silenciosamente.
 
-### 4.2 `trigger` — o que dispara
+### 4.2 `trigger`: o que dispara
 
 ```yaml
 # Manual (padrão): só roda com `fluxor run` ou pelo dashboard
@@ -239,7 +239,7 @@ trigger:
   token: um-segredo-longo-e-aleatorio
 ```
 
-O cron é validado no carregamento — expressão inválida é erro de arquivo, não surpresa às 3 da manhã.
+O cron é validado no carregamento, então expressão inválida vira erro de arquivo em vez de surpresa às 3 da manhã.
 
 Formato: `minuto hora dia mês dia-da-semana`
 
@@ -251,7 +251,7 @@ Formato: `minuto hora dia mês dia-da-semana`
 | `0 0 1 * *` | meia-noite do dia 1 de cada mês |
 | `30 7 * * 0` | 7h30 de domingo |
 
-### 4.3 `vars` — valores do workflow
+### 4.3 `vars`: valores do workflow
 
 ```yaml
 vars:
@@ -274,7 +274,7 @@ fluxor run meu-workflow --var limite=10 --var ativo=false
 
 O valor passa por JSON, então os tipos funcionam: `limite=10` vira inteiro, `ativo=false` vira booleano, e qualquer coisa que não seja JSON válido continua string. Para forçar string, use aspas: `--var nome='"texto"'`.
 
-### 4.4 `env` — segredos, com allowlist
+### 4.4 `env`: segredos, com allowlist
 
 ```yaml
 env:
@@ -286,7 +286,7 @@ Só o que está nessa lista aparece em `{{ env.NOME }}`. O resto do ambiente é 
 
 Se a variável não estiver definida, o Fluxor registra um aviso no carregamento e `{{ env.NOME }}` falha com mensagem clara na hora do uso.
 
-### 4.5 `steps` — os passos
+### 4.5 `steps`: os passos
 
 ```yaml
 steps:
@@ -312,7 +312,7 @@ steps:
       jitter: true              # ±25% de ruído
 ```
 
-Regras do `id`: letras, números e `_`, começando por letra ou `_`. Não pode ser `vars`, `env`, `run`, `steps`, `item`, `index` ou `error` — são nomes que o motor injeta no contexto.
+Regras do `id`: letras, números e `_`, começando por letra ou `_`. Não pode ser `vars`, `env`, `run`, `steps`, `item`, `index` ou `error`, que são nomes que o motor injeta no contexto.
 
 **Como o backoff cresce** (com `delay: 2`):
 
@@ -322,11 +322,11 @@ Regras do `id`: letras, números e `_`, começando por letra ou `_`. Não pode s
 | `linear` | 2s | 4s | 6s | 8s |
 | `exponential` | 2s | 4s | 8s | 16s |
 
-Sempre limitado por `max_delay`. Com `jitter: true`, cada valor recebe ±25% de variação aleatória — o que evita que dez workers que falharam juntos voltem exatamente juntos.
+Sempre limitado por `max_delay`. Com `jitter: true`, cada valor recebe ±25% de variação aleatória, o que evita que dez workers que falharam juntos voltem exatamente juntos.
 
 **Retry não é aplicado a erro permanente.** Um 404, um campo obrigatório faltando ou um seletor CSS que não casou não são retentados: repetir daria o mesmo resultado.
 
-### 4.6 `when` — passo condicional
+### 4.6 `when`: passo condicional
 
 ```yaml
 when: "steps.preco.valor <= vars.teto"
@@ -337,9 +337,9 @@ when: "steps.status.texto != 'ok' and vars.alertar"
 
 Se der falso, o passo fica com status `skipped` e o workflow continua normalmente.
 
-Strings que APIs costumam devolver como negativas — `""`, `"false"`, `"no"`, `"0"`, `"none"`, `"null"` — são tratadas como falso.
+Strings que APIs costumam devolver como negativas (`""`, `"false"`, `"no"`, `"0"`, `"none"`, `"null"`) são tratadas como falso.
 
-### 4.7 `foreach` — um passo, vários itens
+### 4.7 `foreach`: um passo, vários itens
 
 ```yaml
 - id: consultar
@@ -363,9 +363,9 @@ A saída vira uma **lista**, na mesma ordem da entrada:
 
 Os itens rodam **em paralelo**, limitados por `FLUXOR_FOREACH_CONCURRENCY` (5 por padrão). Quatro requisições HTTP levam o tempo da mais lenta, não a soma das quatro.
 
-Se qualquer item falhar, o passo inteiro falha — e aí valem as regras normais de `on_error`.
+Se qualquer item falhar, o passo inteiro falha, e aí valem as regras normais de `on_error`.
 
-### 4.8 `on_failure` — compensação
+### 4.8 `on_failure`: compensação
 
 ```yaml
 on_failure:
@@ -401,7 +401,7 @@ Falha dentro do `on_failure` é registrada no log, mas não gera cascata.
 | `error` | Mensagem do erro | dentro de `on_failure` |
 | `vars.payload` | Corpo JSON do POST | em workflows do tipo `webhook` |
 
-### 5.2 Tipagem nativa — o detalhe que evita bugs
+### 5.2 Tipagem nativa, o detalhe que evita bugs
 
 Uma string que é **apenas** uma expressão preserva o tipo original:
 
@@ -412,7 +412,7 @@ objeto: '{{ {"a": 1} }}'           # -> {"a": 1}  (dict)
 texto:  "Teto de {{ vars.teto }}"  # -> "Teto de 2500" (str)
 ```
 
-Sem isso, `when: "steps.preco.valor > 10"` compararia strings — e `"9" > "10"` é verdadeiro em comparação de texto. Esse é exatamente o tipo de bug que custa uma tarde inteira para achar.
+Sem isso, `when: "steps.preco.valor > 10"` compararia strings, e `"9" > "10"` é verdadeiro em comparação de texto. Esse é exatamente o tipo de bug que custa uma tarde inteira para achar.
 
 ### 5.3 Filtros do Fluxor
 
@@ -437,7 +437,7 @@ Todos os filtros nativos do Jinja continuam disponíveis: `upper`, `lower`, `len
 ### 5.4 Funções globais
 
 ```yaml
-"{{ now() }}"            # datetime UTC — use .isoformat() para texto
+"{{ now() }}"            # datetime UTC; use .isoformat() para texto
 "{{ today() }}"          # "2026-08-11"
 "{{ timestamp() }}"      # 1786545600 (epoch em segundos)
 "{{ uuid4() }}"          # identificador único
@@ -490,7 +490,7 @@ fluxor actions              # lista completa
 fluxor actions http.get     # parâmetros, tipos, padrões e descrição
 ```
 
-### 6.1 `http.*` — requisições
+### 6.1 `http.*`: requisições
 
 ```yaml
 - id: buscar
@@ -533,7 +533,7 @@ fluxor actions http.get     # parâmetros, tipos, padrões e descrição
 
 > **Classificação de erro:** 4xx (exceto 408, 425 e 429) vira `PermanentError` e não é retentado. 5xx, 429 e falhas de conexão são retentáveis.
 
-### 6.2 `parse.*` — extração
+### 6.2 `parse.*`: extração
 
 ```yaml
 # HTML por seletor CSS
@@ -567,10 +567,10 @@ fluxor actions http.get     # parâmetros, tipos, padrões e descrição
     ignore_case: true
 ```
 
-### 6.3 `transform.*` — moldar dados
+### 6.3 `transform.*`: moldar dados
 
 ```yaml
-# map — transforma cada item
+# map: transforma cada item
 - id: nomes
   use: transform.map
   with:
@@ -599,19 +599,19 @@ fluxor actions http.get     # parâmetros, tipos, padrões e descrição
     key: "{{ item.preco }}"
     reverse: true
 
-# unique — remove duplicados preservando a ordem
+# unique: remove duplicados preservando a ordem
 - id: distintos
   use: transform.unique
   with:
     items: "{{ steps.emails }}"
 
-# merge — junta dicionários (o último vence)
+# merge: junta dicionários (o último vence)
 - id: config
   use: transform.merge
   with:
     sources: ["{{ vars.padrao }}", "{{ steps.customizado.json }}"]
 
-# template — monta texto livre
+# template: monta texto livre
 - id: mensagem
   use: transform.template
   with:
@@ -619,10 +619,10 @@ fluxor actions http.get     # parâmetros, tipos, padrões e descrição
       {{ steps.dados.json | length }} itens processados em {{ today() }}
 ```
 
-### 6.4 `flow.*` — controle
+### 6.4 `flow.*`: controle
 
 ```yaml
-# set — guarda valores calculados para reusar
+# set: guarda valores calculados para reusar
 - id: calculado
   use: flow.set
   with:
@@ -631,27 +631,27 @@ fluxor actions http.get     # parâmetros, tipos, padrões e descrição
       media: "{{ steps.soma.valor / steps.itens.json | length }}"
 # uso: {{ steps.calculado.total }}
 
-# assert — barreira de qualidade
+# assert: barreira de qualidade
 - id: sanidade
   use: flow.assert
   with:
     that: "{{ steps.preco.valor > 0 }}"
     message: "preço inválido: {{ steps.preco_texto }}"
 
-# sleep — respeita rate limit
+# sleep: respeita rate limit
 - id: pausa
   use: flow.sleep
   with:
     seconds: 2
 
-# fail — falha de propósito (útil para testar on_failure)
+# fail: falha de propósito (útil para testar on_failure)
 - id: forcar_erro
   use: flow.fail
   with:
     message: "condição inaceitável"
 ```
 
-### 6.5 `file.*` — disco
+### 6.5 `file.*`: disco
 
 ```yaml
 - id: ler
@@ -682,7 +682,7 @@ fluxor actions http.get     # parâmetros, tipos, padrões e descrição
 
 `file.csv_append` cria o cabeçalho na primeira gravação e nunca mais. É a forma mais simples de acumular série temporal: rode todo dia e em duas semanas você tem dados para plotar, sem banco nenhum.
 
-### 6.6 `notify.*` — avisar
+### 6.6 `notify.*`: avisar
 
 ```yaml
 # Log estruturado
@@ -741,7 +741,7 @@ fluxor actions http.get     # parâmetros, tipos, padrões e descrição
 
 Coloque os dois no `.env` e declare `env: [TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID]` no workflow.
 
-### 6.7 `shell.run` — comandos do sistema
+### 6.7 `shell.run`: comandos do sistema
 
 ```yaml
 - id: backup
@@ -757,7 +757,7 @@ Coloque os dois no `.env` e declare `env: [TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID]
 
 Saída: `{{ steps.backup.stdout }}`, `.stderr`, `.returncode`.
 
-> **Segurança:** o padrão é lista de argumentos, executada **sem** shell. Existe `shell: true` para quando você precisa de pipe ou redirecionamento — nesse modo, nunca interpole entrada não confiável. Se o dashboard estiver acessível a outras pessoas, rode em container (o `Dockerfile` já usa usuário sem privilégio).
+> **Segurança:** o padrão é lista de argumentos, executada **sem** shell. Existe `shell: true` para quando você precisa de pipe ou redirecionamento, e nesse modo você nunca deve interpolar entrada não confiável. Se o dashboard estiver acessível a outras pessoas, rode em container (o `Dockerfile` já usa usuário sem privilégio).
 
 ---
 
@@ -865,11 +865,11 @@ O corpo do POST no webhook chega ao workflow como `{{ vars.payload }}`.
 
 ### O dashboard
 
-- **Cartões de métrica** — execuções no período, taxa de sucesso, duração média, workflows ativos.
-- **Gráfico diário** — barras empilhadas de sucesso, parcial e falha nos últimos 14 dias.
-- **Workflows** — cada um com botão **rodar**, que executa e já abre o resultado.
-- **Execuções recentes** — clique em qualquer linha para abrir o painel lateral com todos os passos, saídas, tentativas e erros.
-- **Recarregar YAML** — relê os arquivos do disco sem reiniciar o servidor.
+- **Cartões de métrica**: execuções no período, taxa de sucesso, duração média, workflows ativos.
+- **Gráfico diário**: barras empilhadas de sucesso, parcial e falha nos últimos 14 dias.
+- **Workflows**: cada um com botão **rodar**, que executa e já abre o resultado.
+- **Execuções recentes**: clique em qualquer linha para abrir o painel lateral com todos os passos, saídas, tentativas e erros.
+- **Recarregar YAML**: relê os arquivos do disco sem reiniciar o servidor.
 
 Atualiza sozinho a cada 15 segundos, e pausa o polling quando a aba não está visível.
 
@@ -895,9 +895,9 @@ fluxor serve --scheduler      # junto com a API e o dashboard
 
 Três comportamentos que evitam dor de cabeça:
 
-- **Sem sobreposição** (`max_instances=1`) — se a execução das 9h ainda estiver rodando às 10h, a das 10h não começa por cima.
-- **Sem enxurrada** (`coalesce=True`) — máquina desligada por 3 horas não dispara 3 execuções atrasadas de uma vez; dispara uma.
-- **Tolerância a atraso** (`misfire_grace_time=300`) — atraso maior que 5 minutos faz a janela ser pulada em vez de executada fora de hora.
+- **Sem sobreposição** (`max_instances=1`): se a execução das 9h ainda estiver rodando às 10h, a das 10h não começa por cima.
+- **Sem enxurrada** (`coalesce=True`): máquina desligada por 3 horas não dispara 3 execuções atrasadas de uma vez; dispara uma.
+- **Tolerância a atraso** (`misfire_grace_time=300`): atraso maior que 5 minutos faz a janela ser pulada em vez de executada fora de hora.
 
 Veja o que está agendado e quando roda:
 
@@ -962,7 +962,7 @@ steps:
     with:
       token: "{{ env.TELEGRAM_BOT_TOKEN }}"
       chat_id: "{{ env.TELEGRAM_CHAT_ID }}"
-      text: "🔴 API fora do ar — HTTP {{ steps.checar.status }}"
+      text: "🔴 API fora do ar (HTTP {{ steps.checar.status }})"
 
   - id: registrar
     use: file.csv_append
@@ -1111,7 +1111,7 @@ Ajuste no `docker-compose.yml`: monte a sua pasta de workflows em `/app/workflow
 ```ini
 # /etc/systemd/system/fluxor.service
 [Unit]
-Description=Fluxor — motor de automações
+Description=Fluxor, motor de automações
 After=network-online.target
 Wants=network-online.target
 
@@ -1126,7 +1126,7 @@ ExecStart=/opt/fluxor/.venv/bin/fluxor serve --host 0.0.0.0
 Restart=always
 RestartSec=10
 
-# Endurecimento — o serviço não precisa de nada disso
+# Endurecimento: o serviço não precisa de nada disso
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
@@ -1165,7 +1165,7 @@ server {
 
 ### Checklist de produção
 
-- [ ] `FLUXOR_LOG_FORMAT=json` — para os logs caírem legíveis no Loki/Datadog/CloudWatch.
+- [ ] `FLUXOR_LOG_FORMAT=json`, para os logs caírem legíveis no Loki/Datadog/CloudWatch.
 - [ ] Segredos por variável de ambiente ou gerenciador de segredos, **nunca** no YAML.
 - [ ] O dashboard **não tem autenticação**. Deixe atrás de VPN, Basic Auth do Nginx ou um proxy autenticado.
 - [ ] Tokens de webhook longos e aleatórios (`openssl rand -hex 32`).
@@ -1181,7 +1181,7 @@ server {
 Nome errado ou o plugin não está instalado. Rode `fluxor actions` para ver a lista exata.
 
 **`'{{ steps.x }}' não existe no contexto`**
-Três causas possíveis: (a) erro de digitação no `id`; (b) o passo `x` vem *depois* deste no arquivo; (c) o passo `x` foi pulado por `when` — e passo pulado não publica saída. Use `| default(...)` se a ausência for esperada.
+Três causas possíveis: (a) erro de digitação no `id`; (b) o passo `x` vem *depois* deste no arquivo; (c) o passo `x` foi pulado por `when`, e passo pulado não publica saída. Use `| default(...)` se a ausência for esperada.
 
 **`parâmetros inválidos para 'x.y' -> campo: extra inputs are not permitted`**
 Chave a mais no `with:`. Confira os nomes com `fluxor actions x.y`.
@@ -1190,13 +1190,13 @@ Chave a mais no `with:`. Confira os nomes com `fluxor actions x.y`.
 Provavelmente você está comparando texto. Se o valor vem de uma API como string, converta: `"{{ steps.x.valor | to_number }} > 10"`.
 
 **O workflow agendado não roda**
-O agendador precisa estar de pé: `fluxor scheduler` ou `fluxor serve --scheduler`. Confirme o registro em `GET /api/scheduler/jobs` e confira o fuso — `cron: "0 9 * * *"` com `FLUXOR_TIMEZONE=UTC` dispara às 6h no horário de Brasília.
+O agendador precisa estar de pé: `fluxor scheduler` ou `fluxor serve --scheduler`. Confirme o registro em `GET /api/scheduler/jobs` e confira o fuso. Um `cron: "0 9 * * *"` com `FLUXOR_TIMEZONE=UTC` dispara às 6h no horário de Brasília.
 
 **`database is locked` (SQLite)**
-O modo WAL já vem ligado, o que resolve a maioria dos casos. Se persistir com muita concorrência, migre para PostgreSQL — é só trocar a `FLUXOR_DATABASE_URL`.
+O modo WAL já vem ligado, o que resolve a maioria dos casos. Se persistir com muita concorrência, migre para PostgreSQL: é só trocar a `FLUXOR_DATABASE_URL`.
 
 **`parse.css` não acha nada**
-O site provavelmente monta o conteúdo com JavaScript, e o `http.get` só enxerga o HTML inicial. Verifique com `curl` o que realmente chega. Nesses casos, procure a API que a própria página consome — quase sempre existe, e é mais estável que o HTML.
+O site provavelmente monta o conteúdo com JavaScript, e o `http.get` só enxerga o HTML inicial. Verifique com `curl` o que realmente chega. Nesses casos, procure a API que a própria página consome: quase sempre existe, e é mais estável que o HTML.
 
 **Vejo o aviso `env_ausente`**
 O workflow declarou uma variável em `env:` que não existe no ambiente. Preencha o `.env` ou remova a declaração.
@@ -1215,7 +1215,7 @@ fluxor show <run-id>                  # todas as saídas, depois da execução
 
 ### Uma action nova
 
-Crie um arquivo em `src/fluxor/actions/` — a descoberta é automática:
+Crie um arquivo em `src/fluxor/actions/` e a descoberta é automática:
 
 ```python
 from typing import ClassVar

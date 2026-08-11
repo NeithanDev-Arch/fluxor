@@ -78,7 +78,7 @@ def load_workflow_dir(
 ) -> list[tuple[Workflow, Path]]:
     """Carrega todos os workflows de uma pasta, ordenados por nome.
 
-    Levanta se dois arquivos declararem o mesmo `name` — nomes duplicados
+    Levanta se dois arquivos declararem o mesmo `name`, porque nomes duplicados
     quebrariam o agendador e o histórico silenciosamente.
     """
     base = Path(directory).expanduser()

@@ -68,7 +68,7 @@ fluxor = "fluxor.cli:main"
 packages = ["src/fluxor"]
 
 # ---------------------------------------------------------------------------
-# Ruff — linter + formatter
+# Ruff: linter + formatter
 # ---------------------------------------------------------------------------
 [tool.ruff]
 line-length = 100
@@ -97,7 +97,7 @@ ignore = [
 "tests/*" = ["E501"]
 
 # ---------------------------------------------------------------------------
-# Mypy — checagem estática de tipos
+# Mypy: checagem estática de tipos
 # ---------------------------------------------------------------------------
 [tool.mypy]
 python_version = "3.11"

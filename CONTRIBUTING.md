@@ -28,7 +28,7 @@ passar local, passa lá.
 ## Criando uma action nova
 
 Toda action tem três partes: um schema de entrada, um nome e um `run`
-assíncrono. Crie um arquivo em `src/fluxor/actions/` — ele é descoberto
+assíncrono. Crie um arquivo em `src/fluxor/actions/`. Ele é descoberto
 automaticamente, não precisa registrar em lugar nenhum.
 
 ```python
@@ -60,13 +60,13 @@ class SlackPost(Action):
 
 Checklist da action:
 
-- [ ] `summary` e `description` em cada campo — é o que aparece em
+- [ ] `summary` e `description` em cada campo, que é o que aparece em
       `fluxor actions <nome>` e no `/api/actions`.
 - [ ] Erro que não melhora com nova tentativa levanta `PermanentError`;
       erro transitório levanta qualquer outra exceção.
 - [ ] I/O bloqueante (disco, `smtplib`, bibliotecas síncronas) vai para
       `asyncio.to_thread`.
-- [ ] Um teste em `tests/test_actions.py`. Para HTTP, use `respx` —
+- [ ] Um teste em `tests/test_actions.py`. Para HTTP, use `respx`,
       nenhum teste sai para a internet.
 
 ## Distribuindo actions como pacote separado

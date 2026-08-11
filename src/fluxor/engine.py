@@ -3,7 +3,7 @@
 Responsabilidades, em ordem:
 
 1. resolver `vars` e a allowlist de `env`;
-2. para cada passo — avaliar `when`, expandir `foreach`, renderizar `with`,
+2. para cada passo, avaliar `when`, expandir `foreach`, renderizar `with`,
    validar contra o schema da action, executar com retry e timeout;
 3. registrar cada resultado no `RunContext` (o passo seguinte já enxerga a saída
    do anterior em `{{ steps.<id> }}`);
@@ -11,7 +11,7 @@ Responsabilidades, em ordem:
 5. empurrar tudo para o `RunSink` (banco), sem que uma falha de persistência
    derrube a execução em si.
 
-O motor não conhece SQLAlchemy nem FastAPI — ele fala com o protocolo
+O motor não conhece SQLAlchemy nem FastAPI: ele fala com o protocolo
 :class:`RunSink`. É por isso que dá para usá-lo como biblioteca pura, sem banco.
 """
 
@@ -37,7 +37,7 @@ from fluxor.retry import with_retry
 from fluxor.template import evaluate_condition, render_value, resolve_expression
 
 StepObserver = Callable[[StepResult], None]
-"""Callback chamado a cada passo concluído — a CLI usa para imprimir ao vivo."""
+"""Callback chamado a cada passo concluído. A CLI usa para imprimir ao vivo."""
 
 
 @runtime_checkable
@@ -126,7 +126,7 @@ class Engine:
     ) -> RunRecord:
         """Roda o workflow inteiro e devolve o registro da execução.
 
-        Nunca levanta por falha de passo — o erro vira `record.status = failed`
+        Nunca levanta por falha de passo: o erro vira `record.status = failed`
         e `record.error`. Quem chama decide o que fazer (a CLI vira exit code 1,
         o agendador só loga e segue).
         """
@@ -220,7 +220,7 @@ class Engine:
     def _resolve_vars(
         self, workflow: Workflow, overrides: dict[str, Any], ctx: RunContext
     ) -> dict[str, Any]:
-        """Renderiza `vars` em ordem — uma var pode usar as anteriores."""
+        """Renderiza `vars` em ordem, já que uma var pode usar as anteriores."""
         resolved: dict[str, Any] = {}
         for key, value in workflow.vars.items():
             if key in overrides:
@@ -251,7 +251,7 @@ class Engine:
     async def _execute_step(
         self, step: Step, ctx: RunContext, extra: dict[str, Any] | None = None
     ) -> StepResult:
-        """Executa um passo e devolve o resultado — falha vira status, não exceção."""
+        """Executa um passo e devolve o resultado; falha vira status, não exceção."""
         extra = extra or {}
         result = StepResult(
             step_id=step.id, action=step.use, status=StepStatus.SUCCESS, started_at=utcnow()

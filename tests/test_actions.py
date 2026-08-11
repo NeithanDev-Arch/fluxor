@@ -106,7 +106,7 @@ class TestHttp:
 
     @respx.mock
     async def test_404_e_erro_permanente(self, ctx: RunContext) -> None:
-        """Insistir num 404 só desperdiça tempo — por isso PermanentError."""
+        """Insistir num 404 só desperdiça tempo; por isso PermanentError."""
         respx.get("https://api.teste/sumiu").mock(return_value=httpx.Response(404, text="nada"))
 
         with pytest.raises(HttpPermanentError):

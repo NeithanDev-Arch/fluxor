@@ -1,4 +1,4 @@
-"""Schema do workflow — o contrato entre o YAML e o motor.
+"""Schema do workflow: o contrato entre o YAML e o motor.
 
 Tudo aqui é Pydantic com `extra="forbid"`: uma chave digitada errado no YAML
 vira erro de validação com a linha do problema, e não um campo silenciosamente
@@ -18,7 +18,7 @@ STEP_ID_RE = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 # nome de workflow vira nome de arquivo, rota de webhook e chave de agendamento
 WORKFLOW_NAME_RE = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
 
-# Nomes que o motor injeta no contexto — um passo não pode sequestrá-los.
+# Nomes que o motor injeta no contexto; um passo não pode sequestrá-los.
 RESERVED_STEP_IDS = frozenset({"vars", "env", "run", "steps", "item", "index", "error"})
 
 

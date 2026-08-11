@@ -33,7 +33,7 @@ def utcnow() -> datetime:
 
 @dataclass(slots=True)
 class StepResult:
-    """Resultado de um passo — vira linha na tabela `step_runs` e card no dashboard."""
+    """Resultado de um passo: vira linha na tabela `step_runs` e card no dashboard."""
 
     step_id: str
     action: str
@@ -94,7 +94,7 @@ class RunContext:
     def snapshot(self, **extra: Any) -> dict[str, Any]:
         """Dicionário entregue ao Jinja.
 
-        `extra` injeta escopos locais — `item`/`index` dentro de um `foreach`,
+        `extra` injeta escopos locais: `item`/`index` dentro de um `foreach`,
         `error` nos passos de `on_failure`.
         """
         return {

@@ -1,4 +1,4 @@
-"""Actions de controle de fluxo — pausar, falhar de propósito, guardar valores."""
+"""Actions de controle de fluxo: pausar, falhar de propósito, guardar valores."""
 
 from __future__ import annotations
 
@@ -43,7 +43,7 @@ class SleepInput(ActionInput):
 
 @register("flow.sleep")
 class FlowSleep(Action):
-    """Pausa a execução — útil para respeitar rate limit de API."""
+    """Pausa a execução. Útil para respeitar rate limit de API."""
 
     summary = "Espera N segundos antes do próximo passo"
     Input: ClassVar[type[ActionInput]] = SleepInput
@@ -61,7 +61,7 @@ class FailInput(ActionInput):
 
 @register("flow.fail")
 class FlowFail(Action):
-    """Falha de propósito — para testar `on_failure` e alertas."""
+    """Falha de propósito, para testar `on_failure` e alertas."""
 
     summary = "Falha o passo deliberadamente"
     Input: ClassVar[type[ActionInput]] = FailInput
@@ -81,7 +81,7 @@ class AssertInput(ActionInput):
 class FlowAssert(Action):
     """Barreira de qualidade: interrompe o fluxo se a condição não valer.
 
-    Serve para não notificar em cima de dado quebrado — melhor falhar visível
+    Serve para não notificar em cima de dado quebrado: melhor falhar visível
     do que mandar "Preço atual: None" para o cliente.
     """
 

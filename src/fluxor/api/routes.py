@@ -1,7 +1,7 @@
 """Rotas da API.
 
 Tudo que o dashboard mostra vem daqui, e a mesma API serve para integrar o
-Fluxor com qualquer outra coisa — um botão no seu app, um webhook do GitHub,
+Fluxor com qualquer outra coisa: um botão no seu app, um webhook do GitHub,
 um alerta do Grafana.
 """
 
@@ -126,7 +126,7 @@ async def trigger_webhook(
 ) -> dict[str, Any]:
     """Ponto de entrada para gatilhos externos.
 
-    O token é comparado com `secrets.compare_digest` — comparação com `==`
+    O token é comparado com `secrets.compare_digest`, porque comparação com `==`
     vaza informação por tempo de resposta e permite adivinhar o segredo byte a
     byte. Workflow com token configurado e token errado devolve 403.
     """

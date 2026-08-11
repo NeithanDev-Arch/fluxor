@@ -1,13 +1,13 @@
-"""Agendador — roda sozinho os workflows com `trigger.type: schedule`.
+"""Agendador: roda sozinho os workflows com `trigger.type: schedule`.
 
 Três ajustes que separam um agendador de brinquedo de um utilizável:
 
-* ``max_instances=1`` — se a execução das 9h ainda estiver rodando às 10h, a das
+* ``max_instances=1``: se a execução das 9h ainda estiver rodando às 10h, a das
   10h não começa por cima. Sem isso, um workflow lento se multiplica até derrubar
   a máquina.
-* ``coalesce=True`` — máquina que ficou 3 horas desligada não dispara 3 execuções
+* ``coalesce=True``: máquina que ficou 3 horas desligada não dispara 3 execuções
   atrasadas de uma vez; dispara uma.
-* ``misfire_grace_time`` — atraso tolerado antes de simplesmente pular a janela.
+* ``misfire_grace_time``: atraso tolerado antes de simplesmente pular a janela.
 """
 
 from __future__ import annotations
@@ -85,7 +85,7 @@ class WorkflowScheduler:
         return scheduled
 
     async def _run_workflow(self, name: str) -> None:
-        """Alvo do job. Nunca levanta — o agendador precisa continuar de pé."""
+        """Alvo do job. Nunca levanta, porque o agendador precisa continuar de pé."""
         workflow = self._workflows.get(name)
         if workflow is None:
             log.warning("workflow_sumiu", workflow=name)
@@ -115,7 +115,7 @@ class WorkflowScheduler:
         return dict(self._workflows)
 
     def describe_jobs(self) -> list[dict[str, Any]]:
-        """Lista os jobs com a próxima execução — usado pela CLI e pela API."""
+        """Lista os jobs com a próxima execução. Usado pela CLI e pela API."""
         jobs = []
         for job in self.scheduler.get_jobs():
             workflow = self._workflows.get(job.id)

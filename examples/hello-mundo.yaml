@@ -7,7 +7,7 @@
 # próximo, laço sobre lista e passo condicional.
 # ---------------------------------------------------------------------------
 name: hello
-description: Primeiro contato com o Fluxor — roda sem internet
+description: Primeiro contato com o Fluxor, roda sem internet
 
 trigger:
   type: manual
@@ -57,4 +57,4 @@ steps:
     use: notify.log
     when: "vars.itens | length > 5"
     with:
-      message: "você não vai ver esta mensagem — a lista tem só 3 itens"
+      message: "você não vai ver esta mensagem, a lista tem só 3 itens"

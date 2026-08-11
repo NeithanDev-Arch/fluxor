@@ -1,4 +1,4 @@
-"""Repositório de execuções — implementa o protocolo `RunSink` do motor.
+"""Repositório de execuções, que implementa o protocolo `RunSink` do motor.
 
 Além de gravar, é daqui que saem as consultas do dashboard: histórico paginado,
 detalhe de uma execução e as métricas agregadas.
@@ -35,7 +35,7 @@ def _iso(value: datetime | None) -> str | None:
 def dump_json(value: Any, max_bytes: int) -> str | None:
     """Serializa a saída de um passo, cortando o que for grande demais.
 
-    Uma página HTML de 2 MB não deve virar linha de banco — o valor completo
+    Uma página HTML de 2 MB não deve virar linha de banco. O valor completo
     continua disponível para os passos seguintes durante a execução; o que é
     truncado é só o registro histórico.
     """
@@ -105,7 +105,7 @@ class RunRepository:
     async def finish_run(self, record: RunRecord) -> None:
         async with self.db.session() as session:
             row = await session.get(RunRow, record.id)
-            if row is None:  # execução iniciada sem sink (ex.: retomada) — cria agora
+            if row is None:  # execução iniciada sem sink (ex.: retomada); cria agora
                 row = RunRow(id=record.id, workflow=record.workflow, started_at=record.started_at)
                 session.add(row)
             row.status = record.status.value
@@ -200,7 +200,7 @@ class RunRepository:
     async def stats(self, days: int = 14) -> dict[str, Any]:
         """Métricas do dashboard: volume, taxa de sucesso, série diária e top workflows.
 
-        A agregação por dia é feita em Python de propósito — `date()` tem sintaxe
+        A agregação por dia é feita em Python de propósito, porque `date()` tem sintaxe
         diferente em SQLite e Postgres, e a janela é pequena o bastante para que
         a diferença não apareça.
         """

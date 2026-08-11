@@ -1,10 +1,10 @@
-"""Camada de templates — o `{{ ... }}` que aparece no YAML.
+"""Camada de templates: o `{{ ... }}` que aparece no YAML.
 
 Duas decisões que valem ser explicadas:
 
 **1. Ambiente sandboxed.** O YAML pode vir de qualquer lugar (um PR, um usuário
 do dashboard). `SandboxedEnvironment` bloqueia acesso a atributos internos, então
-`{{ ''.__class__.__mro__ }}` — o caminho clássico para escapar de um template —
+`{{ ''.__class__.__mro__ }}`, o caminho clássico para escapar de um template,
 não funciona.
 
 **2. Tipagem nativa.** Se a string é *exatamente* uma expressão, o resultado sai
@@ -14,7 +14,7 @@ com o tipo original em vez de virar texto::
     msg:    "Teto de {{ vars.teto }}" -> "Teto de 2500" (str, como esperado)
 
 Sem isso, todo `when:` numérico viraria comparação de string e `"9" > "10"`
-seria verdadeiro — o tipo de bug que custa uma tarde inteira.
+seria verdadeiro, e esse é o tipo de bug que custa uma tarde inteira.
 """
 
 from __future__ import annotations
@@ -146,7 +146,7 @@ def sha256(value: Any) -> str:
 
 
 def as_list(value: Any) -> list[Any]:
-    """Garante uma lista — útil quando a API devolve ora item, ora array."""
+    """Garante uma lista. Útil quando a API devolve ora item, ora array."""
     if value is None:
         return []
     if isinstance(value, list):
@@ -207,7 +207,7 @@ def single_expression_source(value: str) -> str | None:
 
     A checagem é feita na árvore sintática do Jinja, não por regex. Uma tentativa
     anterior com `^\\s*\\{\\{(.+?)\\}\\}\\s*$` parecia funcionar e casava
-    ``"{{ a }}:{{ b }}"`` inteiro por causa do backtracking — o par de chaves do
+    ``"{{ a }}:{{ b }}"`` inteiro por causa do backtracking: o par de chaves do
     meio era engolido e a interpolação virava expressão inválida. Perguntar ao
     parser quantos nós de saída existem não tem esse tipo de canto escuro.
     """
@@ -269,7 +269,7 @@ def render_string(source: str, context: dict[str, Any]) -> str:
 def render_value(value: Any, context: dict[str, Any]) -> Any:
     """Renderiza qualquer valor do YAML, recursivamente.
 
-    Strings viram texto interpolado, *exceto* quando são uma única expressão —
+    Strings viram texto interpolado, *exceto* quando são uma única expressão;
     aí o tipo original é preservado. Dicts e listas são percorridos inteiros.
     """
     if isinstance(value, str):
@@ -293,7 +293,7 @@ def resolve_expression(source: str, context: dict[str, Any]) -> Any:
     """Avalia uma expressão escrita com ou sem as chaves.
 
     Campos como `when:` e `foreach:` já são expressões por natureza, então tanto
-    ``steps.itens.json`` quanto ``{{ steps.itens.json }}`` funcionam — ninguém
+    ``steps.itens.json`` quanto ``{{ steps.itens.json }}`` funcionam, e ninguém
     precisa lembrar de qual dos dois é o certo.
     """
     return render_expression(single_expression_source(source) or source.strip(), context)

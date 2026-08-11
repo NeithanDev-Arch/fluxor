@@ -1,4 +1,4 @@
-"""Actions de transformação — moldar dados entre um passo e outro.
+"""Actions de transformação: moldar dados entre um passo e outro.
 
 Estas actions usam `raw_params`: o motor entrega a expressão **sem renderizar**,
 porque `{{ item }}` só existe dentro do laço que a própria action controla.
@@ -136,7 +136,7 @@ class TemplateInput(ActionInput):
 
 @register("transform.template")
 class TransformTemplate(Action):
-    """Monta um texto livre a partir do contexto — mensagens, relatórios, corpos de e-mail."""
+    """Monta um texto livre a partir do contexto: mensagens, relatórios, e-mails."""
 
     summary = "Renderiza um texto usando o contexto da execução"
     Input: ClassVar[type[ActionInput]] = TemplateInput

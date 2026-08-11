@@ -76,5 +76,5 @@ async def repository(database: Database) -> RunRepository:
 
 @pytest.fixture
 def engine() -> Engine:
-    """Motor sem persistência — a maioria dos testes não precisa de banco."""
+    """Motor sem persistência. A maioria dos testes não precisa de banco."""
     return Engine()

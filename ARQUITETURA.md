@@ -32,9 +32,9 @@ record = await Engine().execute(workflow)
 
 | Módulo | Responsabilidade | Depende de |
 |---|---|---|
-| `models.py` | Schema do workflow em Pydantic | — |
+| `models.py` | Schema do workflow em Pydantic | nenhuma |
 | `loader.py` | YAML → `Workflow` validado | `models`, `registry` |
-| `context.py` | Estado vivo da execução | — |
+| `context.py` | Estado vivo da execução | nenhuma |
 | `template.py` | Renderização Jinja em sandbox | `exceptions` |
 | `retry.py` | Política de backoff | `models`, `exceptions` |
 | `registry.py` | Descoberta e registro de actions | `exceptions` |
@@ -130,7 +130,7 @@ FULL_EXPRESSION_RE = re.compile(r"^\s*\{\{(.+?)\}\}\s*$", re.DOTALL)
 
 Parece correto e passou nos primeiros testes. Mas o `.+?` é preguiçoso *com
 backtracking*: em `"{{ a }}:{{ b }}"`, ele não consegue casar parando no
-primeiro `}}` (o `$` não bate), então expande até o último — e captura
+primeiro `}}` (o `$` não bate), então expande até o último, e captura
 `a }}:{{ b` como se fosse uma expressão só. O bug apareceu num teste de
 `foreach` com `"{{ index }}:{{ item }}"`.
 
@@ -161,7 +161,7 @@ env: [TELEGRAM_BOT_TOKEN]
 ```
 
 e o motor monta o dicionário `env` só com esses nomes. O que não foi declarado
-não existe no contexto — não é escondido, é ausente.
+não existe no contexto. Não é escondido, é ausente.
 
 **Trade-off aceito.** Duas linhas a mais de YAML. Em troca, a superfície de um
 YAML malicioso ou de um erro de digitação fica limitada ao que o autor
@@ -174,7 +174,7 @@ conscientemente pediu, e o arquivo documenta seus próprios requisitos.
 caminho conhecido até execução arbitrária de código.
 
 Como o YAML pode vir de um PR, de um usuário do dashboard ou de um arquivo que
-alguém copiou da internet, o sandbox não é paranoia — é o mínimo. Há teste
+alguém copiou da internet, o sandbox não é paranoia, é o mínimo. Há teste
 cobrindo exatamente essa tentativa de fuga.
 
 ### 5. `RunSink` como Protocol
@@ -192,7 +192,7 @@ concretos:
 
 1. O motor roda sem banco nenhum (`Engine()` sem argumentos).
 2. Trocar SQLite por Postgres, Redis ou JSONL não muda uma linha do engine.
-3. Testar o motor não exige banco — um objeto com três métodos basta, e é
+3. Testar o motor não exige banco: um objeto com três métodos basta, e é
    exatamente o que `test_engine.py` faz.
 
 **E mais um detalhe:** toda chamada ao sink é envolvida em try/except.
@@ -216,7 +216,7 @@ com `status=failed` e a mensagem.
 - a CLI quer imprimir o erro bonito e sair com exit code 1;
 - o agendador quer logar e continuar vivo para o próximo horário;
 - a API quer devolver 200 com `"status": "failed"` no corpo (o disparo
-  funcionou — quem falhou foi o workflow).
+   funcionou; quem falhou foi o workflow).
 
 Se o motor levantasse, os três precisariam do mesmo try/except, e um deles
 esqueceria.
@@ -225,7 +225,7 @@ esqueceria.
 
 Automação é trabalho de I/O: esperar rede, esperar disco, esperar SMTP. Com
 `asyncio`, um `foreach` sobre 20 URLs leva o tempo da mais lenta, não a soma das
-vinte — e o dashboard continua respondendo enquanto isso.
+vinte, e o dashboard continua respondendo enquanto isso.
 
 **A disciplina que isso exige:** qualquer chamada bloqueante trava *todos* os
 workflows. Por isso `smtplib`, leitura de arquivo e `csv` vão para
@@ -237,7 +237,7 @@ conexões simultâneas e um IP banido.
 
 ### 8. `extra="forbid"` em todo lugar
 
-Todos os modelos Pydantic — workflow, passo, retry, entrada de action —
+Todos os modelos Pydantic (workflow, passo, retry, entrada de action)
 rejeitam campos desconhecidos.
 
 **Por quê.** O modo de falha de uma ferramenta declarativa não é o erro
@@ -260,7 +260,7 @@ entrar no repositório principal, e o projeto vira um monólito de dependências
 que ninguém usa por inteiro. Com entry points, o ecossistema cresce sem que o
 núcleo cresça.
 
-Plugin quebrado registra warning e é ignorado — um pacote mal instalado não
+Plugin quebrado registra warning e é ignorado: um pacote mal instalado não
 derruba o motor.
 
 ### 10. Persistência com saída truncada
@@ -288,7 +288,7 @@ PRAGMA busy_timeout=5000;
 Sem WAL, rodar `fluxor run` no terminal enquanto o dashboard consulta o banco
 resulta em `database is locked`. Com WAL, leitura e escrita convivem.
 
-`foreign_keys=ON` porque o SQLite ignora foreign keys por padrão — e sem isso a
+`foreign_keys=ON` porque o SQLite ignora foreign keys por padrão, e sem isso a
 regra `ON DELETE CASCADE` de `step_runs` seria decorativa.
 
 ### 12. Dashboard sem build
@@ -297,7 +297,7 @@ HTML, CSS e JavaScript puros. Sem npm, sem bundler, sem `node_modules`.
 
 **Por quê.** O dashboard tem quatro telas e um gráfico. Uma cadeia de build
 traria 300 MB de dependências, uma etapa a mais no CI e uma segunda linguagem no
-repositório — para renderizar quatro cartões e uma tabela. O gráfico é SVG
+repositório, tudo isso para renderizar quatro cartões e uma tabela. O gráfico é SVG
 gerado à mão, com `<title>` em cada barra para o tooltip nativo.
 
 **Quando essa decisão deixa de valer:** se o dashboard ganhar edição de
@@ -313,7 +313,7 @@ framework passa a se pagar.
 | **Grafo de dependências entre passos** | Execução linear cobre a maioria dos casos e é infinitamente mais fácil de depurar. Um DAG é a evolução natural, mas complica o modelo mental; está no roadmap. |
 | **Fila distribuída (Celery/RQ)** | Um agendador de processo único resolve até um volume alto. Introduzir broker significa mais uma peça para operar e monitorar. A troca vale quando houver necessidade real de escala horizontal. |
 | **Autenticação no dashboard** | Autenticação feita pela metade é pior que nenhuma. A recomendação é explícita: proxy autenticado, VPN ou Basic Auth do Nginx. Está documentado no checklist de produção. |
-| **Retomada a partir do passo que falhou** | Exige que toda action seja idempotente — uma promessa que o Fluxor não pode fazer pelos plugins de terceiros. |
+| **Retomada a partir do passo que falhou** | Exige que toda action seja idempotente, uma promessa que o Fluxor não pode fazer pelos plugins de terceiros. |
 | **Interface de edição de workflow** | O YAML mora no git, com histórico, revisão e rollback. Editar pela web enfraqueceria isso. |
 
 ---
@@ -334,16 +334,16 @@ teste cobre um comportamento que, se quebrar, causa um bug real.
 
 Alguns testes que valem ser destacados:
 
-- **`test_sink_quebrado_nao_derruba_a_execucao`** — um sink que levanta em todos
+- **`test_sink_quebrado_nao_derruba_a_execucao`**: um sink que levanta em todos
   os métodos; a execução precisa terminar com sucesso mesmo assim.
-- **`test_preserva_a_ordem_de_entrada`** — `foreach` com 10 itens concorrentes;
+- **`test_preserva_a_ordem_de_entrada`**: `foreach` com 10 itens concorrentes;
   a saída tem que sair na ordem da entrada.
-- **`test_passo_pulado_nao_publica_saida`** — depender de um passo pulado precisa
+- **`test_passo_pulado_nao_publica_saida`**: depender de um passo pulado precisa
   falhar de forma clara, não silenciosa.
-- **`test_saida_gigante_e_truncada`** — 50 KB de saída circulam inteiros durante
+- **`test_saida_gigante_e_truncada`**: 50 KB de saída circulam inteiros durante
   a execução e chegam cortados ao banco.
-- **`test_sandbox_bloqueia_acesso_a_internos`** — a fuga clássica de template.
-- **`test_todos_os_exemplos_sao_validos`** — os exemplos do repositório são
+- **`test_sandbox_bloqueia_acesso_a_internos`**: a fuga clássica de template.
+- **`test_todos_os_exemplos_sao_validos`**: os exemplos do repositório são
   validados no CI. Documentação que quebra é pior que documentação ausente.
 
 ---

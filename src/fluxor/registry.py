@@ -126,7 +126,7 @@ def action_names() -> list[str]:
 
 
 def clear_registry() -> None:
-    """Zera o registry — usado nos testes que registram actions falsas."""
+    """Zera o registry. Usado nos testes que registram actions falsas."""
     global _builtins_loaded, _plugins_loaded
     _REGISTRY.clear()
     _builtins_loaded = False

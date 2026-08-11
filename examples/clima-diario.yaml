@@ -2,7 +2,7 @@
 # Demonstra `foreach`: um passo, várias cidades, requisições em paralelo
 # (limitadas por FLUXOR_FOREACH_CONCURRENCY).
 #
-# A saída de um passo com foreach é uma LISTA, na mesma ordem da entrada —
+# A saída de um passo com foreach é uma LISTA, na mesma ordem da entrada,
 # por isso `steps.previsoes[index]` casa com `vars.cidades[index]`.
 #
 # API Open-Meteo: pública, sem chave, sem cadastro.
@@ -46,7 +46,7 @@ steps:
     use: transform.template
     with:
       template: |
-        Boletim do tempo — {{ today() }}
+        Boletim do tempo de {{ today() }}
         {% for linha in steps.linhas %}
         • {{ linha }}
         {%- endfor %}

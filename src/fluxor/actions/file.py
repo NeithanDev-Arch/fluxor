@@ -1,10 +1,10 @@
-"""Actions de arquivo — ler entrada, gravar saída, acumular histórico em CSV.
+"""Actions de arquivo: ler entrada, gravar saída, acumular histórico em CSV.
 
 Todo I/O de disco vai para `asyncio.to_thread`: são chamadas bloqueantes e, num
 motor assíncrono, travar o event loop significa travar todos os workflows que
 estão rodando ao mesmo tempo.
 
-A única exceção é `Path.expanduser()`, que não toca no disco — resolve `~` lendo
+A única exceção é `Path.expanduser()`, que não toca no disco: resolve `~` lendo
 variáveis de ambiente. O linter marca qualquer método de `pathlib` dentro de
 função assíncrona, então essas três linhas levam `# noqa` explícito.
 """

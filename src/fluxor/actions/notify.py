@@ -1,4 +1,4 @@
-"""Actions de notificação — o último passo de quase todo workflow útil.
+"""Actions de notificação: o último passo de quase todo workflow útil.
 
 Uma automação que roda e não avisa ninguém é um cron job. O que transforma isso
 em produto é o alerta chegar onde a pessoa já está olhando.
@@ -45,7 +45,7 @@ class NotifyLog(Action):
 
 
 class TelegramInput(ActionInput):
-    token: str = Field(description="Token do bot — use {{ env.TELEGRAM_BOT_TOKEN }}.")
+    token: str = Field(description="Token do bot; use {{ env.TELEGRAM_BOT_TOKEN }}.")
     chat_id: str | int = Field(description="ID do chat/grupo de destino.")
     text: str
     parse_mode: Literal["HTML", "Markdown", "MarkdownV2", "none"] = "HTML"
@@ -111,7 +111,7 @@ class WebhookInput(ActionInput):
 
 @register("notify.webhook")
 class NotifyWebhook(Action):
-    """Dispara um webhook genérico — Slack, n8n, Zapier, seu próprio backend."""
+    """Dispara um webhook genérico: Slack, n8n, Zapier, seu próprio backend."""
 
     summary = "Envia um POST JSON para uma URL qualquer"
     Input: ClassVar[type[ActionInput]] = WebhookInput
@@ -146,7 +146,7 @@ class EmailInput(ActionInput):
 class NotifyEmail(Action):
     """Envia e-mail por SMTP.
 
-    `smtplib` é bloqueante, então a chamada inteira vai para uma thread —
+    `smtplib` é bloqueante, então a chamada inteira vai para uma thread,
     o event loop continua livre para os outros workflows.
     """
 

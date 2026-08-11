@@ -138,7 +138,7 @@ class TestLoader:
 
 
 class TestExemplosDoRepositorio:
-    """Os exemplos versionados precisam continuar válidos — isso roda no CI."""
+    """Os exemplos versionados precisam continuar válidos; isso roda no CI."""
 
     def test_todos_os_exemplos_sao_validos(self) -> None:
         examples = Path(__file__).resolve().parents[1] / "examples"

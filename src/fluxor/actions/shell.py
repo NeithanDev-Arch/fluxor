@@ -1,7 +1,7 @@
 """Execução de comandos do sistema.
 
 Nota de segurança, porque isso importa: um workflow com `shell.run` faz o que o
-usuário do processo puder fazer. Por isso o padrão é a forma segura — uma lista
+usuário do processo puder fazer. Por isso o padrão é a forma segura: uma lista
 de argumentos, executada **sem** shell, sem interpolação do interpretador.
 `shell: true` existe para quando você precisa de pipe ou redirecionamento, e
 nesse modo você é responsável por não interpolar entrada não confiável.

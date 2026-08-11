@@ -1,6 +1,6 @@
 """Testes de integração: banco, API HTTP e CLI.
 
-Aqui os componentes são exercitados juntos — um workflow real é executado, o
+Aqui os componentes são exercitados juntos: um workflow real é executado, o
 resultado é gravado, lido pela API e mostrado pela CLI.
 """
 

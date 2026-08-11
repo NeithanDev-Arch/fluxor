@@ -1,6 +1,6 @@
 """Conexão com o banco.
 
-Padrão é SQLite (arquivo único, zero setup — você clona e roda). Como a URL vem
+Padrão é SQLite (arquivo único, zero setup: você clona e roda). Como a URL vem
 da configuração, trocar para Postgres é mudar uma variável de ambiente::
 
     FLUXOR_DATABASE_URL=postgresql+asyncpg://user:senha@host/fluxor

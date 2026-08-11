@@ -14,7 +14,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    """Configuração do processo — CLI, API e agendador leem daqui."""
+    """Configuração do processo. CLI, API e agendador leem daqui."""
 
     model_config = SettingsConfigDict(
         env_prefix="FLUXOR_",
@@ -58,7 +58,7 @@ class Settings(BaseSettings):
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
-    """Retorna a configuração do processo (cacheada — leia sempre por aqui)."""
+    """Retorna a configuração do processo (cacheada; leia sempre por aqui)."""
     return Settings()
 
 

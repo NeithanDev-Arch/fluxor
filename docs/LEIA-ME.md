@@ -10,7 +10,7 @@ Esta pasta guarda as imagens usadas no README.
 
 ## O que capturar (em ordem de impacto)
 
-### 1. `dashboard.png` — a mais importante (já feita)
+### 1. `dashboard.png`: a mais importante (já feita)
 
 ```bash
 fluxor serve
@@ -35,7 +35,7 @@ Depois, no README, troque o bloco de instrução por:
 ![Dashboard](docs/dashboard.png)
 ```
 
-### 2. `execucao.gif` — o que mais prende atenção
+### 2. `execucao.gif`: o que mais prende atenção
 
 Um GIF de 10 a 15 segundos vale mais que dois parágrafos. Sugestão de roteiro:
 
@@ -49,7 +49,7 @@ Ferramentas: [ScreenToGif](https://www.screentogif.com/) (Windows),
 Para o terminal isolado, [asciinema](https://asciinema.org/) +
 [agg](https://github.com/asciinema/agg) gera um GIF leve e nítido.
 
-Mantenha abaixo de 5 MB — acima disso o GitHub demora a carregar e a pessoa
+Mantenha abaixo de 5 MB, porque acima disso o GitHub demora a carregar e a pessoa
 rola a página antes de ver.
 
 ### 3. `detalhe-execucao.png`
@@ -60,7 +60,7 @@ O painel lateral aberto, mostrando a saída JSON de cada passo. É o que comunic
 ## Dicas
 
 - Rode um workflow que falha de propósito (`fluxor run` num YAML com
-  `flow.fail`) para o gráfico ter barras vermelhas — um painel 100% verde
+  `flow.fail`) para o gráfico ter barras vermelhas, porque um painel 100% verde
   parece mock.
 - Esconda dados sensíveis antes de publicar: tokens, e-mails, URLs internas.
 - Prefira PNG para telas estáticas e GIF só para movimento.

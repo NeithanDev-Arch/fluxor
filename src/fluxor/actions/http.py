@@ -1,4 +1,4 @@
-"""Actions HTTP — a porta de entrada da maioria das automações.
+"""Actions HTTP: a porta de entrada da maioria das automações.
 
 Detalhe que muda a vida em produção: **4xx não é retentado, 5xx é.** Um 404
 continuará 404 na terceira tentativa; um 503 costuma passar. A separação vem da
@@ -29,7 +29,7 @@ class HttpStatusError(FluxorError):
 
 
 class HttpPermanentError(PermanentError):
-    """Resposta 4xx — insistir não muda nada."""
+    """Resposta 4xx. Insistir não muda nada."""
 
 
 class RequestInput(ActionInput):
@@ -118,7 +118,7 @@ class GetInput(RequestInput):
 
 @register("http.get")
 class HttpGet(Action):
-    """Atalho para GET — o caso de 80% dos workflows."""
+    """Atalho para GET, o caso de 80% dos workflows."""
 
     summary = "Busca uma URL (GET) e devolve status, texto e JSON já parseado"
     Input: ClassVar[type[ActionInput]] = GetInput

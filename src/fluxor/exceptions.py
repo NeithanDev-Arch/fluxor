@@ -14,7 +14,7 @@ class FluxorError(Exception):
 
 
 class PermanentError(FluxorError):
-    """Erro que não deve ser retentado — tentar de novo daria o mesmo resultado."""
+    """Erro que não deve ser retentado: tentar de novo daria o mesmo resultado."""
 
 
 class WorkflowValidationError(PermanentError):

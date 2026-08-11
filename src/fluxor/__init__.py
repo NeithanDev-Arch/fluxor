@@ -1,4 +1,4 @@
-"""Fluxor — motor de automações declarativas.
+"""Fluxor: motor de automações declarativas.
 
 Você descreve o fluxo em YAML; o Fluxor resolve as dependências entre passos,
 executa com retry e timeout, grava cada execução no banco e expõe tudo em uma
