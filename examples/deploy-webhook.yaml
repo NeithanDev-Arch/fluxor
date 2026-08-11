@@ -1,0 +1,40 @@
+# ---------------------------------------------------------------------------
+# Gatilho externo. Suba a API (`fluxor serve`) e dispare de qualquer lugar:
+#
+#   curl -X POST "http://localhost:8000/api/hooks/deploy-webhook?token=troque-este-token" \
+#        -H "Content-Type: application/json" \
+#        -d '{"branch": "main", "autor": "neithan"}'
+#
+# O corpo do POST chega no workflow como {{ vars.payload }}.
+# TROQUE O TOKEN antes de expor isso em qualquer lugar público.
+# ---------------------------------------------------------------------------
+name: deploy-webhook
+description: Recebe um POST externo e executa uma rotina local
+
+trigger:
+  type: webhook
+  token: troque-este-token
+
+vars:
+  projeto: meu-app
+
+steps:
+  - id: recebido
+    use: notify.log
+    with:
+      message: "Webhook recebido para {{ vars.projeto }}"
+      data:
+        branch: "{{ vars.payload.branch | default('desconhecida') }}"
+        autor: "{{ vars.payload.autor | default('anônimo') }}"
+
+  # shell.run com lista de argumentos: sem shell, sem interpolação, sem surpresa.
+  - id: ambiente
+    use: shell.run
+    with:
+      command: ["python", "--version"]
+      timeout: 30
+
+  - id: confirmar
+    use: notify.log
+    with:
+      message: "Rotina concluída em {{ steps.ambiente.stdout }}"

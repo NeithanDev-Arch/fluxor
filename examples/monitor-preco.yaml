@@ -1,0 +1,95 @@
+# ---------------------------------------------------------------------------
+# Scraping + alerta: o caso clássico de automação, sem uma linha de Python.
+#
+# O alvo é o books.toscrape.com — um site feito justamente para praticar
+# scraping, então não há questão de termos de uso aqui. Troque a URL e o
+# seletor para o produto que você quer acompanhar.
+#
+# Para receber o alerta no Telegram, preencha TELEGRAM_BOT_TOKEN e
+# TELEGRAM_CHAT_ID no .env. Sem isso, o passo falha e o `on_failure` registra.
+# ---------------------------------------------------------------------------
+name: monitor-preco
+description: Acompanha o preço de um produto e avisa quando cai abaixo do teto
+
+trigger:
+  type: schedule
+  cron: "0 */6 * * *"
+
+# Allowlist: só estas duas variáveis de ambiente ficam visíveis no template.
+env:
+  - TELEGRAM_BOT_TOKEN
+  - TELEGRAM_CHAT_ID
+
+vars:
+  url: https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html
+  seletor: p.price_color
+  teto: 55.0
+
+steps:
+  - id: pagina
+    use: http.get
+    with:
+      url: "{{ vars.url }}"
+    timeout: 20
+    retry:
+      attempts: 3
+      delay: 2
+      backoff: exponential
+
+  - id: preco_texto
+    use: parse.css
+    with:
+      html: "{{ steps.pagina.text }}"
+      selector: "{{ vars.seletor }}"
+      first: true
+      required: true # se o site mudar o layout, falha alto em vez de silenciar
+
+  # "£51.77" -> 51.77 (o filtro to_number entende formato pt-BR e en-US)
+  - id: preco
+    use: flow.set
+    with:
+      values:
+        valor: "{{ steps.preco_texto | to_number }}"
+
+  # Barreira de qualidade: melhor falhar do que notificar "Preço: None".
+  - id: sanidade
+    use: flow.assert
+    with:
+      that: "{{ steps.preco.valor > 0 }}"
+      message: "preço extraído inválido: {{ steps.preco_texto }}"
+
+  - id: historico
+    use: file.csv_append
+    with:
+      path: data/precos.csv
+      rows:
+        - data: "{{ now().isoformat() }}"
+          url: "{{ vars.url }}"
+          preco: "{{ steps.preco.valor }}"
+
+  - id: alerta
+    use: notify.telegram
+    when: "steps.preco.valor <= vars.teto"
+    with:
+      token: "{{ env.TELEGRAM_BOT_TOKEN }}"
+      chat_id: "{{ env.TELEGRAM_CHAT_ID }}"
+      parse_mode: HTML
+      text: |
+        <b>Preço caiu!</b>
+        Valor: <b>{{ steps.preco_texto }}</b> (teto: {{ vars.teto }})
+        <a href="{{ vars.url }}">abrir produto</a>
+    # Notificação não deve derrubar a coleta: se o Telegram estiver fora,
+    # o histórico já foi gravado e o workflow termina como "partial".
+    on_error: continue
+
+  - id: resumo
+    use: notify.log
+    with:
+      message: "Preço atual: {{ steps.preco_texto }} (teto {{ vars.teto }})"
+
+on_failure:
+  - id: registrar_falha
+    use: notify.log
+    with:
+      level: error
+      message: "monitor-preco falhou: {{ error }}"

@@ -1,0 +1,15 @@
+# O repositório guarda tudo com LF. Quem clonar no Windows continua vendo CRLF
+# no editor, mas o diff não fica poluído por causa do sistema operacional.
+* text=auto eol=lf
+
+# Arquivos que precisam de LF mesmo no Windows (rodam dentro de container Linux)
+*.sh        text eol=lf
+Dockerfile  text eol=lf
+Makefile    text eol=lf
+
+# Binários — o Git não deve tentar converter nada
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.db  binary

@@ -1,0 +1,60 @@
+# ---------------------------------------------------------------------------
+# Comece por aqui. Roda offline, sem chave de API e sem configurar nada:
+#
+#   fluxor run examples/hello-mundo.yaml
+#
+# Mostra os quatro conceitos básicos: vars, saída de um passo alimentando o
+# próximo, laço sobre lista e passo condicional.
+# ---------------------------------------------------------------------------
+name: hello-mundo
+description: Primeiro contato com o Fluxor — roda sem internet
+
+trigger:
+  type: manual
+
+vars:
+  nome: mundo
+  itens:
+    - relatório financeiro
+    - backup do banco
+    - envio de e-mails
+
+steps:
+  # flow.set guarda valores calculados para os passos seguintes.
+  - id: saudacao
+    use: flow.set
+    with:
+      values:
+        texto: "Olá, {{ vars.nome }}!"
+        quando: "{{ today() }}"
+
+  # transform.map roda a expressão uma vez por item ({{ item }} e {{ index }}).
+  - id: numerados
+    use: transform.map
+    with:
+      items: "{{ vars.itens }}"
+      expr: "{{ index + 1 }}. {{ item | upper }}"
+
+  # transform.template aceita Jinja completo, inclusive laços.
+  - id: relatorio
+    use: transform.template
+    with:
+      template: |
+        {{ steps.saudacao.texto }}
+        Data: {{ steps.saudacao.quando }}
+
+        Tarefas automatizadas:
+        {% for linha in steps.numerados %}  {{ linha }}
+        {% endfor %}
+
+  - id: mostrar
+    use: notify.log
+    with:
+      message: "{{ steps.relatorio }}"
+
+  # `when` falso => passo marcado como "skipped", sem falhar o workflow.
+  - id: so_para_listas_grandes
+    use: notify.log
+    when: "vars.itens | length > 5"
+    with:
+      message: "você não vai ver esta mensagem — a lista tem só 3 itens"

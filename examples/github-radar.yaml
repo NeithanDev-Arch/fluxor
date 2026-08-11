@@ -1,0 +1,83 @@
+# ---------------------------------------------------------------------------
+# Acompanha métricas de repositórios do GitHub e guarda a série em CSV.
+# Rode todo dia e, em duas semanas, você tem um histórico para plotar.
+#
+# Funciona sem token (limite de 60 req/h por IP). Com token, sobe para 5.000/h:
+# preencha GITHUB_TOKEN no .env — o `env:` abaixo já libera a leitura.
+# ---------------------------------------------------------------------------
+name: github-radar
+description: Coleta estrelas, forks e issues abertas de repositórios acompanhados
+
+trigger:
+  type: schedule
+  cron: "0 8 * * *"
+
+env:
+  - GITHUB_TOKEN
+
+vars:
+  repos:
+    - fastapi/fastapi
+    - pydantic/pydantic
+    - astral-sh/ruff
+
+steps:
+  - id: dados
+    use: http.get
+    foreach: "{{ vars.repos }}"
+    with:
+      url: "https://api.github.com/repos/{{ item }}"
+      headers:
+        Accept: application/vnd.github+json
+    retry:
+      attempts: 3
+      delay: 2
+      backoff: exponential
+
+  # Uma expressão que resolve para um dicionário devolve um dicionário de
+  # verdade — não uma string com cara de dicionário.
+  - id: metricas
+    use: transform.map
+    with:
+      items: "{{ steps.dados }}"
+      expr: >-
+        {{ {"data": today(),
+            "repo": item.json.full_name,
+            "estrelas": item.json.stargazers_count,
+            "forks": item.json.forks_count,
+            "issues_abertas": item.json.open_issues_count} }}
+
+  - id: ordenado
+    use: transform.sort
+    with:
+      items: "{{ steps.metricas }}"
+      key: "{{ item.estrelas }}"
+      reverse: true
+
+  - id: historico
+    use: file.csv_append
+    with:
+      path: data/github.csv
+      headers: [data, repo, estrelas, forks, issues_abertas]
+      rows: "{{ steps.ordenado }}"
+
+  - id: relatorio
+    use: transform.template
+    with:
+      template: |
+        Radar GitHub — {{ today() }}
+        {% for repo in steps.ordenado %}
+        {{ repo.repo }} — {{ repo.estrelas }} ⭐ · {{ repo.forks }} forks · {{ repo.issues_abertas }} issues
+        {%- endfor %}
+
+  - id: publicar
+    use: notify.log
+    with:
+      message: "{{ steps.relatorio }}"
+
+on_failure:
+  - id: registrar_falha
+    use: notify.log
+    with:
+      level: error
+      message: "github-radar falhou: {{ error }}"

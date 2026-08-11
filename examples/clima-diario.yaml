@@ -1,0 +1,61 @@
+# ---------------------------------------------------------------------------
+# Demonstra `foreach`: um passo, várias cidades, requisições em paralelo
+# (limitadas por FLUXOR_FOREACH_CONCURRENCY).
+#
+# A saída de um passo com foreach é uma LISTA, na mesma ordem da entrada —
+# por isso `steps.previsoes[index]` casa com `vars.cidades[index]`.
+#
+# API Open-Meteo: pública, sem chave, sem cadastro.
+# ---------------------------------------------------------------------------
+name: clima-diario
+description: Boletim do tempo de várias cidades em uma única execução
+
+trigger:
+  type: schedule
+  cron: "0 7 * * *"
+  timezone: America/Sao_Paulo
+
+vars:
+  cidades:
+    - { nome: "São Paulo", lat: -23.55, lon: -46.63 }
+    - { nome: "Rio de Janeiro", lat: -22.91, lon: -43.17 }
+    - { nome: "Recife", lat: -8.05, lon: -34.88 }
+    - { nome: "Porto Alegre", lat: -30.03, lon: -51.23 }
+
+steps:
+  - id: previsoes
+    use: http.get
+    foreach: "{{ vars.cidades }}"
+    with:
+      url: >-
+        https://api.open-meteo.com/v1/forecast?latitude={{ item.lat }}&longitude={{ item.lon }}&current=temperature_2m,relative_humidity_2m
+    timeout: 20
+    retry:
+      attempts: 3
+      delay: 1
+
+  - id: linhas
+    use: transform.map
+    with:
+      items: "{{ vars.cidades }}"
+      expr: >-
+        {{ item.nome }}: {{ steps.previsoes[index].json.current.temperature_2m }}°C,
+        umidade {{ steps.previsoes[index].json.current.relative_humidity_2m }}%
+
+  - id: boletim
+    use: transform.template
+    with:
+      template: |
+        Boletim do tempo — {{ today() }}
+        {% for linha in steps.linhas %}
+        • {{ linha }}
+        {%- endfor %}
+
+  - id: publicar
+    use: notify.log
+    with:
+      message: "{{ steps.boletim }}"
+
+  # Para receber no Telegram, preencha as variáveis no .env, adicione
+  #   env: [TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID]
+  # no topo do arquivo e troque o passo acima por notify.telegram.

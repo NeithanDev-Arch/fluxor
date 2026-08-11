@@ -1,0 +1,73 @@
+# ---------------------------------------------------------------------------
+# Consulta a cotação do dólar, grava histórico em CSV e alerta se passar do teto.
+# API pública, sem chave. Agendado para dias úteis às 9h.
+#
+#   fluxor run cotacao-dolar
+#   fluxor run cotacao-dolar --var alerta_acima_de=1
+# ---------------------------------------------------------------------------
+name: cotacao-dolar
+description: Registra a cotação do dólar e alerta quando passa do teto
+
+trigger:
+  type: schedule
+  cron: "0 9 * * 1-5"
+  timezone: America/Sao_Paulo
+
+vars:
+  par: USD-BRL
+  alerta_acima_de: 5.50
+
+steps:
+  - id: cotacao
+    use: http.get
+    description: API pública da AwesomeAPI
+    with:
+      url: "https://economia.awesomeapi.com.br/json/last/{{ vars.par }}"
+    timeout: 15
+    retry:
+      attempts: 4
+      delay: 2
+      backoff: exponential
+      max_delay: 20
+
+  - id: valor
+    use: parse.json
+    with:
+      data: "{{ steps.cotacao.json }}"
+      path: "USDBRL.bid"
+      required: true # falha explicitamente se a API mudar o formato
+
+  # A API devolve "5.43" como string; convertemos uma vez e reusamos.
+  - id: numero
+    use: flow.set
+    with:
+      values:
+        bid: "{{ steps.valor | to_number }}"
+
+  - id: historico
+    use: file.csv_append
+    with:
+      path: data/cotacoes.csv
+      rows:
+        - data: "{{ now().isoformat() }}"
+          par: "{{ vars.par }}"
+          valor: "{{ steps.numero.bid }}"
+
+  - id: alerta
+    use: notify.log
+    when: "steps.numero.bid > vars.alerta_acima_de"
+    with:
+      level: warning
+      message: "Dólar acima do teto: {{ steps.numero.bid | brl }} (teto {{ vars.alerta_acima_de | brl }})"
+
+  - id: resumo
+    use: notify.log
+    with:
+      message: "Cotação registrada: {{ steps.numero.bid | brl }}"
+
+on_failure:
+  - id: avisar_falha
+    use: notify.log
+    with:
+      level: error
+      message: "cotacao-dolar falhou: {{ error }}"

@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fluxor — painel de automações</title>
+  <meta name="description" content="Painel de execuções do Fluxor: workflows, histórico e métricas." />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">⚡</span>
+      <div>
+        <h1>Fluxor</h1>
+        <p class="brand-sub">motor de automações declarativas</p>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <span id="health-pill" class="pill pill-muted">conectando…</span>
+      <button id="reload-btn" class="btn btn-ghost" title="Relê os arquivos YAML do disco">
+        recarregar YAML
+      </button>
+      <button id="refresh-btn" class="btn btn-primary">atualizar</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Métricas -->
+    <section class="stat-grid" aria-label="Métricas gerais">
+      <article class="card stat">
+        <span class="stat-label">execuções (14d)</span>
+        <strong class="stat-value" id="stat-total">—</strong>
+        <span class="stat-hint" id="stat-total-hint">&nbsp;</span>
+      </article>
+      <article class="card stat">
+        <span class="stat-label">taxa de sucesso</span>
+        <strong class="stat-value" id="stat-success">—</strong>
+        <span class="stat-hint"><span class="meter"><i id="stat-meter"></i></span></span>
+      </article>
+      <article class="card stat">
+        <span class="stat-label">duração média</span>
+        <strong class="stat-value" id="stat-duration">—</strong>
+        <span class="stat-hint" id="stat-duration-hint">&nbsp;</span>
+      </article>
+      <article class="card stat">
+        <span class="stat-label">workflows ativos</span>
+        <strong class="stat-value" id="stat-workflows">—</strong>
+        <span class="stat-hint" id="stat-scheduled">&nbsp;</span>
+      </article>
+    </section>
+
+    <!-- Gráfico -->
+    <section class="card chart-card">
+      <div class="card-head">
+        <h2>Execuções por dia</h2>
+        <div class="legend">
+          <span><i class="dot dot-success"></i>sucesso</span>
+          <span><i class="dot dot-partial"></i>parcial</span>
+          <span><i class="dot dot-failed"></i>falha</span>
+        </div>
+      </div>
+      <div id="chart" class="chart"></div>
+    </section>
+
+    <div class="columns">
+      <!-- Workflows -->
+      <section class="card">
+        <div class="card-head">
+          <h2>Workflows</h2>
+          <span class="badge" id="workflow-count">0</span>
+        </div>
+        <div id="workflow-list" class="list">
+          <p class="empty">carregando…</p>
+        </div>
+      </section>
+
+      <!-- Execuções -->
+      <section class="card">
+        <div class="card-head">
+          <h2>Execuções recentes</h2>
+          <div class="filters">
+            <button class="chip chip-active" data-status="">todas</button>
+            <button class="chip" data-status="success">sucesso</button>
+            <button class="chip" data-status="failed">falha</button>
+          </div>
+        </div>
+        <div id="run-list" class="list">
+          <p class="empty">carregando…</p>
+        </div>
+      </section>
+    </div>
+
+    <footer class="footer">
+      <span>Fluxor · <a href="/docs">documentação da API</a></span>
+      <span id="last-update">—</span>
+    </footer>
+  </main>
+
+  <!-- Painel lateral de detalhe -->
+  <div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+  <aside id="drawer" class="drawer" hidden aria-label="Detalhe da execução">
+    <div class="drawer-head">
+      <div>
+        <h2 id="drawer-title">execução</h2>
+        <p id="drawer-sub" class="drawer-sub"></p>
+      </div>
+      <button id="drawer-close" class="btn btn-ghost" aria-label="Fechar">✕</button>
+    </div>
+    <div id="drawer-body" class="drawer-body"></div>
+  </aside>
+
+  <div id="toast" class="toast" hidden></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

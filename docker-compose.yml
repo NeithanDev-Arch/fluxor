@@ -1,0 +1,44 @@
+# Sobe o Fluxor com dashboard + agendador:
+#
+#   docker compose up -d
+#   docker compose logs -f
+#
+# Dashboard em http://localhost:8000
+
+services:
+  fluxor:
+    build: .
+    image: fluxor:latest
+    container_name: fluxor
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      FLUXOR_WORKFLOWS_DIR: /app/workflows
+      FLUXOR_DATABASE_URL: sqlite+aiosqlite:////data/fluxor.db
+      FLUXOR_LOG_FORMAT: json
+      FLUXOR_LOG_LEVEL: INFO
+      FLUXOR_ENABLE_SCHEDULER: "true"
+      FLUXOR_TIMEZONE: America/Sao_Paulo
+    env_file:
+      # Credenciais dos workflows (TELEGRAM_BOT_TOKEN etc.). Copie o .env.example.
+      - path: .env
+        required: false
+    volumes:
+      # Edite o YAML na sua máquina e clique em "recarregar YAML" no dashboard.
+      - ./examples:/app/workflows:ro
+      # Banco de execuções e saídas em CSV sobrevivem ao container.
+      - fluxor-data:/data
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request as u, sys; sys.exit(0 if u.urlopen('http://127.0.0.1:8000/api/health', timeout=4).status == 200 else 1)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  fluxor-data:
